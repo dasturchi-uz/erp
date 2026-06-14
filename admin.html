@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Admin panel | HACKATHON IT SCHOOL</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root{
+      --navy:#10243e;
+      --navy2:#1e3c72;
+      --accent:#ff7a30;
+      --bg:#f3f5f9;
+      --line:#e3e8f0;
+      --green:#1f9d55;
+      --red:#d9534f;
+      --gray:#8a96a6;
+      --blue:#2f6fed;
+    }
+    *{font-family:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;}
+    h1,h2,h3,h4,.display-font{font-family:'Sora',system-ui,sans-serif;}
+    body{background:var(--bg); color:var(--navy); min-height:100vh;}
+
+    /* ===== Login screen ===== */
+    .login-wrap{
+      min-height:100vh; display:flex; align-items:center; justify-content:center;
+      background: radial-gradient(1200px 600px at 80% -10%, #2a4a82 0%, var(--navy) 55%, #0b1929 100%);
+    }
+    .login-card{
+      background:#fff; border-radius:24px; padding:40px 36px;
+      box-shadow:0 24px 60px -20px rgba(0,0,0,0.4);
+      width:100%; max-width:380px;
+    }
+    .login-card h2{font-weight:800; margin-bottom:4px;}
+    .login-card .form-control{border-radius:14px; padding:13px 16px; border:1.5px solid var(--line);}
+    .login-card .form-control:focus{border-color:var(--navy2); box-shadow:0 0 0 4px rgba(30,60,114,0.12);}
+    .btn-login{
+      background:var(--navy2); border:none; color:#fff; border-radius:14px;
+      padding:13px; font-weight:700; transition:.18s;
+    }
+    .btn-login:hover{background:#15305f;}
+
+    /* ===== Admin layout ===== */
+    .topbar{
+      background:var(--navy); color:#fff; padding:16px 0;
+    }
+    .topbar .brand{font-family:'Sora',sans-serif; font-weight:800; font-size:1.15rem;}
+    .topbar .sub{opacity:.65; font-size:.8rem;}
+
+    .stat-card{
+      background:#fff; border-radius:18px; padding:16px 18px;
+      border:1px solid var(--line);
+      box-shadow:0 10px 24px -16px rgba(16,36,62,0.18);
+      cursor:pointer; transition:.15s;
+      height:100%;
+    }
+    .stat-card:hover{transform:translateY(-2px); box-shadow:0 14px 28px -16px rgba(16,36,62,0.28);}
+    .stat-card.active{border-color:var(--navy2); box-shadow:0 0 0 3px rgba(30,60,114,0.12);}
+    .stat-card .num{font-size:1.8rem; font-weight:800; font-family:'Sora',sans-serif; line-height:1;}
+    .stat-card .lbl{font-size:.78rem; color:#5b6c84; font-weight:600; margin-top:6px; letter-spacing:.01em;}
+    .stat-card .dot{width:10px; height:10px; border-radius:50%; display:inline-block; margin-bottom:8px;}
+
+    .toolbar{
+      background:#fff; border-radius:16px; padding:14px 16px;
+      border:1px solid var(--line);
+      display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+    }
+    .toolbar .form-control, .toolbar .form-select{
+      border-radius:12px; border:1.5px solid var(--line); padding:9px 14px; font-size:.9rem;
+    }
+
+    .table-custom{
+      background:#fff; border-radius:18px; overflow:hidden;
+      border:1px solid var(--line);
+      box-shadow:0 10px 24px -16px rgba(16,36,62,0.12);
+    }
+    .table-custom thead th{
+      background:var(--navy); color:#fff; font-weight:700; font-size:.8rem;
+      letter-spacing:.03em; text-transform:uppercase; border:none; padding:14px 12px;
+      white-space:nowrap;
+    }
+    .table-custom tbody td{padding:12px; vertical-align:middle; font-size:.9rem; border-color:var(--line);}
+    .table-custom tbody tr:hover{background:#f7f9fc;}
+
+    .badge-status{
+      font-size:.74rem; font-weight:700; padding:5px 12px; border-radius:999px; letter-spacing:.02em;
+    }
+    .badge-new{background:rgba(47,111,237,0.12); color:var(--blue);}
+    .badge-called{background:rgba(255,177,60,0.18); color:#b8650a;}
+    .badge-no_answer{background:rgba(138,150,166,0.18); color:#5b6c84;}
+    .badge-accepted{background:rgba(31,157,85,0.14); color:var(--green);}
+    .badge-rejected{background:rgba(217,83,79,0.12); color:var(--red);}
+
+    .action-btn{
+      border:none; background:transparent; font-size:1.05rem; padding:4px 6px; border-radius:8px;
+      transition:.15s; line-height:1;
+    }
+    .action-btn:hover{background:#eef2f8;}
+
+    .empty-state{
+      text-align:center; padding:60px 20px; color:#8a96a6;
+    }
+    .empty-state .ic{font-size:2.6rem; margin-bottom:10px;}
+
+    /* Modal details */
+    .detail-row{display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--line); font-size:.92rem;}
+    .detail-row:last-child{border-bottom:none;}
+    .detail-row .k{color:#5b6c84; font-weight:600;}
+    .detail-row .v{font-weight:600; text-align:right; max-width:60%;}
+
+    @media (max-width:768px){
+      .table-custom{font-size:.82rem;}
+      .toolbar{flex-direction:column; align-items:stretch;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===================== LOGIN SCREEN ===================== -->
+<div id="loginScreen" class="login-wrap">
+  <div class="login-card">
+    <h2>Admin panel</h2>
+    <p class="text-secondary mb-4">HACKATHON IT SCHOOL — Qabul 2026</p>
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Parol</label>
+      <input type="password" id="adminPasswordInput" class="form-control" placeholder="Parolni kiriting" autofocus>
+    </div>
+    <button class="btn btn-login w-100" id="loginBtn">Kirish</button>
+    <div id="loginError" class="text-danger small mt-2"></div>
+    <div class="text-center mt-4">
+      <a href="index.html" class="text-muted small text-decoration-none">← Asosiy sahifaga qaytish</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== ADMIN PANEL ===================== -->
+<div id="adminApp" style="display:none;">
+  <div class="topbar">
+    <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div>
+        <div class="brand">HACKATHON IT SCHOOL</div>
+        <div class="sub">Admin panel · Qabul 2026</div>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-light btn-sm rounded-pill" id="refreshBtn">⟳ Yangilash</button>
+        <button class="btn btn-outline-light btn-sm rounded-pill" id="exportBtn">⬇ CSV</button>
+        <button class="btn btn-outline-danger btn-sm rounded-pill" id="logoutBtn">Chiqish</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container py-4">
+
+    <!-- Stat cards / filters -->
+    <div class="row g-3 mb-3" id="statCards">
+      <div class="col-6 col-md-2">
+        <div class="stat-card active" data-filter="all">
+          <span class="dot" style="background:var(--navy2)"></span>
+          <div class="num" id="countAll">0</div>
+          <div class="lbl">Hammasi</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="stat-card" data-filter="new">
+          <span class="dot" style="background:var(--blue)"></span>
+          <div class="num" id="countNew">0</div>
+          <div class="lbl">Yangi arizalar</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="stat-card" data-filter="called">
+          <span class="dot" style="background:#b8650a"></span>
+          <div class="num" id="countCalled">0</div>
+          <div class="lbl">Gaplashildi</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="stat-card" data-filter="no_answer">
+          <span class="dot" style="background:var(--gray)"></span>
+          <div class="num" id="countNoAnswer">0</div>
+          <div class="lbl">Ko‘tarmadi</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="stat-card" data-filter="accepted">
+          <span class="dot" style="background:var(--green)"></span>
+          <div class="num" id="countAccepted">0</div>
+          <div class="lbl">Qabul qilingan</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="stat-card" data-filter="rejected">
+          <span class="dot" style="background:var(--red)"></span>
+          <div class="num" id="countRejected">0</div>
+          <div class="lbl">Arxiv (rad etilgan)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar mb-3">
+      <input type="text" class="form-control flex-grow-1" id="searchInput" placeholder="🔍 Ism yoki telefon raqami bo‘yicha qidirish..." style="min-width:220px;">
+      <select class="form-select" id="gradeFilter" style="max-width:180px;">
+        <option value="">Barcha sinflar</option>
+      </select>
+      <span class="text-muted small ms-auto" id="resultCount"></span>
+    </div>
+
+    <!-- Table -->
+    <div class="table-custom">
+      <div class="table-responsive">
+        <table class="table mb-0 align-middle">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>F.I.SH</th>
+              <th>Telefon</th>
+              <th>Sinf</th>
+              <th>Holat</th>
+              <th>Sana</th>
+              <th class="text-end">Amallar</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+      <div id="emptyState" class="empty-state" style="display:none;">
+        <div class="ic">📭</div>
+        <div class="fw-bold">Bu bo‘limda hech narsa yo‘q</div>
+        <div class="small">Filtrlarni o‘zgartiring yoki yangi arizalarni kuting</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== DETAIL / ACCEPT MODAL ===================== -->
+<div class="modal fade" id="detailModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" style="border-radius:20px; border:none;">
+      <div class="modal-header" style="border-bottom:1px solid var(--line);">
+        <h5 class="modal-title fw-bold" id="modalTitle">Ariza tafsilotlari</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- filled dynamically -->
+      </div>
+      <div class="modal-footer" style="border-top:1px solid var(--line);">
+        <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Yopish</button>
+        <button type="button" class="btn btn-primary rounded-pill" id="modalSaveBtn" style="background:var(--navy2); border:none;">Saqlash</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // ===================== CONFIG =====================
+  const SUPABASE_URL = "https://wxnrolrrfcdzhkjyunyx.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_nUOvzTJN26fLNIzRilM7cQ_IuAXxijd";
+  const ADMIN_PASSWORD = "rishton01";
+  const SESSION_KEY = "hackathon_admin_session";
+
+  let supabaseClient = null;
+  let allRegistrations = [];
+  let currentFilter = "all";
+  let currentEditId = null;
+
+  // ===================== AUTH =====================
+  function checkSession() {
+    if (sessionStorage.getItem(SESSION_KEY) === "1") {
+      showAdminApp();
+    }
+  }
+
+  document.getElementById("loginBtn").addEventListener("click", doLogin);
+  document.getElementById("adminPasswordInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") doLogin();
+  });
+
+  function doLogin() {
+    const pwd = document.getElementById("adminPasswordInput").value;
+    const errDiv = document.getElementById("loginError");
+    if (pwd === ADMIN_PASSWORD) {
+      sessionStorage.setItem(SESSION_KEY, "1");
+      showAdminApp();
+    } else {
+      errDiv.textContent = "Noto‘g‘ri parol!";
+    }
+  }
+
+  function showAdminApp() {
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("adminApp").style.display = "block";
+    initSupabase();
+    loadData();
+  }
+
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    sessionStorage.removeItem(SESSION_KEY);
+    window.location.reload();
+  });
+
+  // ===================== SUPABASE =====================
+  function initSupabase() {
+    try {
+      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } catch (e) {
+      console.error(e);
+      alert("Supabase ulanish xatosi: " + e.message);
+    }
+  }
+
+  async function fetchAllRegistrations() {
+    const { data, error } = await supabaseClient
+      .from("registrations")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return data || [];
+  }
+
+  async function updateRegistration(id, fields) {
+    const { error } = await supabaseClient
+      .from("registrations")
+      .update(fields)
+      .eq("id", id);
+    if (error) throw error;
+  }
+
+  // ===================== LOAD & RENDER =====================
+  async function loadData() {
+    const tbody = document.getElementById("tableBody");
+    tbody.innerHTML = `<tr><td colspan="7" class="text-center py-5"><div class="spinner-border text-primary"></div></td></tr>`;
+    try {
+      allRegistrations = await fetchAllRegistrations();
+      populateGradeFilter();
+      updateCounts();
+      renderTable();
+    } catch (err) {
+      tbody.innerHTML = `<tr><td colspan="7"><div class="alert alert-danger m-2">Xatolik: ${escapeHtml(err.message)}. "registrations" jadvalini va ustunlarni tekshiring (status, grade_applied, birth_date, address kerak).</div></td></tr>`;
+    }
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  function populateGradeFilter() {
+    const grades = new Set();
+    allRegistrations.forEach(r => { if (r.grade_applied) grades.add(r.grade_applied); });
+    const select = document.getElementById("gradeFilter");
+    const current = select.value;
+    select.innerHTML = `<option value="">Barcha sinflar</option>`;
+    [...grades].sort().forEach(g => {
+      select.innerHTML += `<option value="${escapeHtml(g)}">${escapeHtml(g)}</option>`;
+    });
+    select.value = current;
+  }
+
+  function updateCounts() {
+    const counts = { all: allRegistrations.length, new: 0, called: 0, no_answer: 0, accepted: 0, rejected: 0 };
+    allRegistrations.forEach(r => {
+      const s = r.status || "new";
+      if (counts[s] !== undefined) counts[s]++;
+    });
+    document.getElementById("countAll").textContent = counts.all;
+    document.getElementById("countNew").textContent = counts.new;
+    document.getElementById("countCalled").textContent = counts.called;
+    document.getElementById("countNoAnswer").textContent = counts.no_answer;
+    document.getElementById("countAccepted").textContent = counts.accepted;
+    document.getElementById("countRejected").textContent = counts.rejected;
+  }
+
+  function statusLabel(status) {
+    const map = {
+      new: "🆕 Yangi",
+      called: "📞 Gaplashildi",
+      no_answer: "🔇 Ko‘tarmadi",
+      accepted: "✅ Qabul qilindi",
+      rejected: "🗂 Rad etilgan"
+    };
+    return map[status] || map.new;
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById("tableBody");
+    const emptyState = document.getElementById("emptyState");
+    const search = document.getElementById("searchInput").value.trim().toLowerCase();
+    const gradeFilter = document.getElementById("gradeFilter").value;
+
+    let rows = allRegistrations.filter(r => {
+      const status = r.status || "new";
+      if (currentFilter !== "all" && status !== currentFilter) return false;
+      if (gradeFilter && r.grade_applied !== gradeFilter) return false;
+      if (search) {
+        const name = (r.full_name || "").toLowerCase();
+        const phone = (r.phone || "").toLowerCase();
+        if (!name.includes(search) && !phone.includes(search)) return false;
+      }
+      return true;
+    });
+
+    document.getElementById("resultCount").textContent = `${rows.length} ta natija`;
+
+    if (!rows.length) {
+      tbody.innerHTML = "";
+      emptyState.style.display = "block";
+      return;
+    }
+    emptyState.style.display = "none";
+
+    tbody.innerHTML = rows.map((r, idx) => {
+      const status = r.status || "new";
+      const date = r.created_at ? new Date(r.created_at).toLocaleDateString('uz-UZ') : '—';
+      return `
+        <tr>
+          <td>${idx + 1}</td>
+          <td class="fw-semibold">${escapeHtml(r.full_name)}</td>
+          <td><a href="tel:${escapeHtml(r.phone)}" class="text-decoration-none">${escapeHtml(r.phone)}</a></td>
+          <td>${escapeHtml(r.grade_applied) || '—'}</td>
+          <td><span class="badge-status badge-${status}">${statusLabel(status)}</span></td>
+          <td><small>${date}</small></td>
+          <td class="text-end">
+            <button class="action-btn" title="Batafsil / Tahrirlash" onclick="openDetail('${r.id}')">✏️</button>
+            ${status !== 'called' ? `<button class="action-btn" title="Gaplashildi" onclick="quickSetStatus('${r.id}','called')">📞</button>` : ''}
+            ${status !== 'no_answer' ? `<button class="action-btn" title="Ko‘tarmadi" onclick="quickSetStatus('${r.id}','no_answer')">🔇</button>` : ''}
+            ${status !== 'accepted' ? `<button class="action-btn" title="Qabul qilish" onclick="openDetail('${r.id}', true)">✅</button>` : ''}
+            ${status !== 'rejected' ? `<button class="action-btn" title="Rad etish (arxiv)" onclick="quickSetStatus('${r.id}','rejected')">🗂</button>` : ''}
+            ${status === 'rejected' ? `<button class="action-btn" title="Arxivdan chiqarish" onclick="quickSetStatus('${r.id}','new')">↩️</button>` : ''}
+          </td>
+        </tr>`;
+    }).join("");
+  }
+
+  // ===================== QUICK STATUS CHANGE =====================
+  async function quickSetStatus(id, status) {
+    try {
+      await updateRegistration(id, { status });
+      const rec = allRegistrations.find(r => r.id === id);
+      if (rec) rec.status = status;
+      updateCounts();
+      renderTable();
+    } catch (err) {
+      alert("Xatolik: " + err.message);
+    }
+  }
+  window.quickSetStatus = quickSetStatus;
+
+  // ===================== DETAIL / ACCEPT MODAL =====================
+  function openDetail(id, forceAccept) {
+    const rec = allRegistrations.find(r => r.id === id);
+    if (!rec) return;
+    currentEditId = id;
+    const status = rec.status || "new";
+    const willAccept = forceAccept || status === 'accepted';
+
+    document.getElementById("modalTitle").textContent = rec.full_name || "Ariza";
+
+    const body = document.getElementById("modalBody");
+    body.innerHTML = `
+      <div class="row g-3 mb-3">
+        <div class="col-12">
+          <div class="detail-row"><span class="k">Telefon</span><span class="v"><a href="tel:${escapeHtml(rec.phone)}">${escapeHtml(rec.phone)}</a></span></div>
+          <div class="detail-row"><span class="k">Tug‘ilgan sana</span><span class="v">${rec.birth_date ? new Date(rec.birth_date).toLocaleDateString('uz-UZ') : '—'}</span></div>
+          <div class="detail-row"><span class="k">Manzil</span><span class="v">${escapeHtml(rec.address) || '—'}</span></div>
+          <div class="detail-row"><span class="k">Qabulga yozilgan sinf</span><span class="v">${escapeHtml(rec.grade_applied) || '—'}</span></div>
+          <div class="detail-row"><span class="k">Xabar</span><span class="v">${escapeHtml(rec.message) || '—'}</span></div>
+          <div class="detail-row"><span class="k">Ariza sanasi</span><span class="v">${rec.created_at ? new Date(rec.created_at).toLocaleString('uz-UZ') : '—'}</span></div>
+        </div>
+      </div>
+      <hr>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Holat</label>
+          <select class="form-select" id="editStatus">
+            <option value="new" ${status==='new'?'selected':''}>🆕 Yangi</option>
+            <option value="called" ${status==='called'?'selected':''}>📞 Gaplashildi</option>
+            <option value="no_answer" ${status==='no_answer'?'selected':''}>🔇 Ko‘tarmadi</option>
+            <option value="accepted" ${status==='accepted'?'selected':''}>✅ Qabul qilindi</option>
+            <option value="rejected" ${status==='rejected'?'selected':''}>🗂 Rad etilgan (arxiv)</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Qabul qilingan sinf</label>
+          <select class="form-select" id="editGrade">
+            <option value="">Tanlang...</option>
+            ${["1-sinf","2-sinf","3-sinf","4-sinf","5-sinf","6-sinf","7-sinf","8-sinf","9-sinf","10-sinf","11-sinf"].map(g =>
+              `<option value="${g}" ${rec.grade_applied===g?'selected':''}>${g}</option>`).join('')}
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Maktabga kelish sanasi</label>
+          <input type="date" class="form-control" id="editArrivalDate" value="${rec.arrival_date || ''}">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Qayerdan (manzil)</label>
+          <input type="text" class="form-control" id="editAddress" value="${escapeHtml(rec.address) || ''}" placeholder="Tuman / shahar / mahalla">
+        </div>
+        <div class="col-12">
+          <label class="form-label fw-semibold">Admin izohi</label>
+          <textarea class="form-control" id="editNotes" rows="2" placeholder="Telefon suhbati natijasi, qo‘shimcha izoh...">${escapeHtml(rec.admin_notes) || ''}</textarea>
+        </div>
+      </div>
+    `;
+
+    if (willAccept) {
+      document.getElementById("editStatus").value = "accepted";
+    }
+
+    const modal = new bootstrap.Modal(document.getElementById("detailModal"));
+    modal.show();
+  }
+  window.openDetail = openDetail;
+
+  document.getElementById("modalSaveBtn").addEventListener("click", async () => {
+    if (!currentEditId) return;
+    const fields = {
+      status: document.getElementById("editStatus").value,
+      grade_applied: document.getElementById("editGrade").value || null,
+      arrival_date: document.getElementById("editArrivalDate").value || null,
+      address: document.getElementById("editAddress").value.trim() || null,
+      admin_notes: document.getElementById("editNotes").value.trim() || null
+    };
+    try {
+      await updateRegistration(currentEditId, fields);
+      const rec = allRegistrations.find(r => r.id === currentEditId);
+      if (rec) Object.assign(rec, fields);
+      updateCounts();
+      renderTable();
+      bootstrap.Modal.getInstance(document.getElementById("detailModal")).hide();
+    } catch (err) {
+      alert("Xatolik: " + err.message + "\n\nEslatma: 'registrations' jadvalida arrival_date va admin_notes ustunlari mavjudligini tekshiring.");
+    }
+  });
+
+  // ===================== FILTERS / SEARCH =====================
+  document.querySelectorAll(".stat-card").forEach(card => {
+    card.addEventListener("click", () => {
+      document.querySelectorAll(".stat-card").forEach(c => c.classList.remove("active"));
+      card.classList.add("active");
+      currentFilter = card.dataset.filter;
+      renderTable();
+    });
+  });
+
+  document.getElementById("searchInput").addEventListener("input", renderTable);
+  document.getElementById("gradeFilter").addEventListener("change", renderTable);
+  document.getElementById("refreshBtn").addEventListener("click", loadData);
+
+  // ===================== EXPORT CSV =====================
+  document.getElementById("exportBtn").addEventListener("click", () => {
+    const headers = ["F.I.SH","Telefon","Tug'ilgan sana","Manzil","Sinf (so'rov)","Holat","Qabul sinfi","Kelish sanasi","Izoh","Sana"];
+    const rows = allRegistrations.map(r => [
+      r.full_name, r.phone, r.birth_date || '', r.address || '',
+      r.grade_applied || '', statusLabel(r.status || 'new'),
+      r.grade_applied || '', r.arrival_date || '', r.admin_notes || '',
+      r.created_at ? new Date(r.created_at).toLocaleString('uz-UZ') : ''
+    ]);
+    let csv = "\uFEFF" + [headers, ...rows].map(row =>
+      row.map(cell => `"${String(cell).replace(/"/g,'""')}"`).join(",")
+    ).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `qabul_2026_${new Date().toISOString().slice(0,10)}.csv`;
+    link.click();
+  });
+
+  // ===================== INIT =====================
+  checkSession();
+</script>
+</body>
+</html>
