@@ -44,6 +44,7 @@
       font-size:.8rem; font-weight:600; letter-spacing:.04em;
       backdrop-filter: blur(6px);
     }
+    .hero-logo{width:80px; height:80px; border-radius:50%; box-shadow:0 8px 24px -8px rgba(0,0,0,0.5);}
     .hero-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(255,122,48,.2);}
     .hero h1{font-size:clamp(2rem, 5vw, 3.4rem); font-weight:800; line-height:1.08; letter-spacing:-.01em;}
     .hero .accent{color:var(--accent2);}
@@ -140,6 +141,12 @@
       60%{ transform:scale(1.12); opacity:1; }
       100%{ transform:scale(1); }
     }
+
+    footer.site-footer{
+      background:var(--navy); color:rgba(255,255,255,.72);
+    }
+    footer.site-footer a{color:#fff; text-decoration:none; font-weight:600;}
+    footer.site-footer .footer-logo{width:48px; height:48px; border-radius:50%;}
   </style>
 </head>
 <body>
@@ -148,6 +155,7 @@
 
 <header class="hero py-5">
   <div class="container py-4 position-relative">
+    <img src="logo.png" alt="Hackathon IT School" class="hero-logo mb-3">
     <div class="hero-badge mb-3"><span class="dot"></span> HACKATHON IT SCHOOL — Xususiy maktab</div>
     <h1 class="mb-3">2026-yil qabul uchun <span class="accent">ariza topshiring</span></h1>
     <p class="fs-5 mb-0" style="max-width:560px; opacity:.85;">
@@ -193,11 +201,15 @@
         </div>
       </div>
     </div>
+
+   
+    </div>
   </div>
 </section>
 
 <footer class="site-footer py-4 mt-3">
   <div class="container text-center small">
+    <img src="logo.png" alt="Hackathon IT School" class="footer-logo mb-2">
     <p class="mb-1 fw-bold">HACKATHON IT SCHOOL</p>
     <p class="mb-0">© 2026 · Tel: <a href="tel:+998500456010">+998 50 045 60 10</a> · Joylar soni cheklangan</p>
   </div>
