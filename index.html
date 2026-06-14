@@ -131,10 +131,15 @@
     .secret-trigger:hover{opacity:1; transform:scale(1.06);}
     @media (max-width:640px){ .secret-trigger{bottom:16px; right:16px; width:42px; height:42px;} }
 
-    footer.site-footer{
-      background:var(--navy); color:rgba(255,255,255,.72);
+    .success-icon{
+      font-size:3.6rem;
+      animation: pop 0.5s ease;
     }
-    footer.site-footer a{color:#fff; text-decoration:none; font-weight:600;}
+    @keyframes pop{
+      0%{ transform:scale(0.4); opacity:0; }
+      60%{ transform:scale(1.12); opacity:1; }
+      100%{ transform:scale(1); }
+    }
   </style>
 </head>
 <body>
@@ -159,69 +164,32 @@
 <section class="container py-5">
   <div class="row g-4 justify-content-center">
     <div class="col-lg-7 col-12">
-      <div class="card-modern p-4 p-md-5">
-        <h3 class="fw-bold mb-1">Ro‘yxatdan o‘tish</h3>
-        <p class="text-secondary mb-4">Quyidagi maʼlumotlarni to‘liq va aniq kiriting</p>
-        <form id="registrationForm">
-          <div class="row g-3">
-            <div class="col-12">
-              <label class="form-label">O‘quvchining F.I.SH <span class="req">*</span></label>
-              <input type="text" class="form-control" id="fullName" placeholder="Ism Familiya Sharifi" required>
+      <div class="card-modern p-4 p-md-5" id="formCard">
+        <div id="formStep">
+          <h3 class="fw-bold mb-1">Qabulga yozilish</h3>
+          <p class="text-secondary mb-4">Ism va telefon raqamingizni qoldiring — qolgan maʼlumotlarni keyinroq operatorimiz bilan birga to‘ldirasiz</p>
+          <form id="registrationForm">
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label">O‘quvchining F.I.SH <span class="req">*</span></label>
+                <input type="text" class="form-control" id="fullName" placeholder="Ism Familiya Sharifi" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Telefon raqami <span class="req">*</span></label>
+                <input type="tel" class="form-control" id="phone" placeholder="+998 90 123 45 67" required>
+              </div>
             </div>
-            <div class="col-md-6">
-              <label class="form-label">Ota-ona telefon raqami <span class="req">*</span></label>
-              <input type="tel" class="form-control" id="phone" placeholder="+998 90 123 45 67" required>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Tug‘ilgan sana</label>
-              <input type="date" class="form-control" id="birthDate">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Hozirgi yashash manzili (tuman/shahar)</label>
-              <input type="text" class="form-control" id="address" placeholder="Masalan: Toshkent sh., Yunusobod">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Qaysi sinfga yozilmoqchisiz</label>
-              <select class="form-control" id="grade">
-                <option value="">Tanlang...</option>
-                <option>1-sinf</option><option>2-sinf</option><option>3-sinf</option>
-                <option>4-sinf</option><option>5-sinf</option><option>6-sinf</option>
-                <option>7-sinf</option><option>8-sinf</option><option>9-sinf</option>
-                <option>10-sinf</option><option>11-sinf</option>
-              </select>
-            </div>
-            <div class="col-12">
-              <label class="form-label">Qo‘shimcha xabar (ixtiyoriy)</label>
-              <textarea class="form-control" id="message" rows="3" placeholder="Savollaringiz yoki qo‘shimcha izoh..."></textarea>
-            </div>
-          </div>
-          <button type="submit" class="btn btn-submit w-100 mt-4" id="submitBtn">Arizani yuborish</button>
-          <div id="formMessage" class="mt-3"></div>
-        </form>
-      </div>
-    </div>
+            <button type="submit" class="btn btn-submit w-100 mt-4" id="submitBtn">Qabulga yozilish</button>
+            <div id="formMessage" class="mt-3"></div>
+          </form>
+        </div>
 
-    <div class="col-lg-4 col-12">
-      <div class="d-flex flex-column gap-3 h-100">
-        <div class="info-card">
-          <div class="ic">📞</div>
-          <h6>Bog‘lanish uchun</h6>
-          <p>Savollaringiz bo‘lsa: <strong>+998 50 045 60 10</strong></p>
-        </div>
-        <div class="info-card">
-          <div class="ic">🏫</div>
-          <h6>Joylar cheklangan</h6>
-          <p>Har bir sinf uchun o‘rinlar soni cheklangan, shu sababli iloji boricha tezroq ariza topshiring.</p>
-        </div>
-        <div class="info-card">
-          <div class="ic">⏱️</div>
-          <h6>Keyingi qadam</h6>
-          <p>Ariza qabul qilingach, operatorlarimiz 1–2 kun ichida siz bilan telefon orqali bog‘lanadi.</p>
-        </div>
-        <div class="info-card">
-          <div class="ic">🔒</div>
-          <h6>Maxfiylik</h6>
-          <p>Kiritilgan maʼlumotlar faqat qabul jarayoni uchun ishlatiladi va xavfsiz saqlanadi.</p>
+        <!-- Success state -->
+        <div id="successStep" style="display:none;" class="text-center py-3">
+          <div class="success-icon mb-3">✅</div>
+          <h3 class="fw-bold mb-2">Rahmat!</h3>
+          <p class="text-secondary mb-4">Arizangiz muvaffaqiyatli qabul qilindi. Operatorlarimiz tez orada siz bilan bog‘lanib, qolgan maʼlumotlarni aniqlashtiradi.</p>
+          <button class="btn btn-outline-secondary rounded-pill px-4" id="newRequestBtn">Yana ariza qoldirish</button>
         </div>
       </div>
     </div>
@@ -276,10 +244,6 @@
     e.preventDefault();
     const fullName = document.getElementById("fullName").value.trim();
     const phone = document.getElementById("phone").value.trim();
-    const birthDate = document.getElementById("birthDate").value || null;
-    const address = document.getElementById("address").value.trim() || null;
-    const grade = document.getElementById("grade").value || null;
-    const message = document.getElementById("message").value.trim() || null;
 
     if (!fullName) return showFormMessage("Ism va familiya majburiy", "danger");
     if (!phone) return showFormMessage("Telefon raqam majburiy", "danger");
@@ -291,18 +255,20 @@
       await saveRegistration({
         full_name: fullName,
         phone: phone,
-        birth_date: birthDate,
-        address: address,
-        grade_applied: grade,
-        message: message,
         status: "new"
       });
-      showFormMessage("✅ Arizangiz qabul qilindi! Tez orada operatorlarimiz siz bilan bog‘lanadi.", "success");
       document.getElementById("registrationForm").reset();
+      document.getElementById("formStep").style.display = "none";
+      document.getElementById("successStep").style.display = "block";
     } catch (err) {
       let x = "Xatolik: " + (err.message || "");
       showFormMessage(x, "danger");
-    } finally { btn.disabled = false; btn.textContent = "Arizani yuborish"; }
+    } finally { btn.disabled = false; btn.textContent = "Qabulga yozilish"; }
+  });
+
+  document.getElementById("newRequestBtn")?.addEventListener("click", () => {
+    document.getElementById("successStep").style.display = "none";
+    document.getElementById("formStep").style.display = "block";
   });
 
   document.getElementById("secretAdminLock")?.addEventListener("click", () => {
