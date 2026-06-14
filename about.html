@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>HACKATHON IT SCHOOL — Kelajak kasblariga yo‘naltirilgan ta’lim</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --navy:#10243e;
+      --navy2:#1e3c72;
+      --teal:#1ea7a0;
+      --teal-light:#e6f7f5;
+      --accent:#ff7a30;
+      --bg:#f5f7fb;
+      --line:#e3e8f0;
+      --ink:#33486b;
+      --muted:#5b6c84;
+    }
+    *{font-family:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;}
+    h1,h2,h3,h4,.display-font{font-family:'Sora',system-ui,sans-serif;}
+    body{background:var(--bg); color:var(--navy); min-height:100vh;}
+    a{color:var(--teal);}
+
+    /* ===== Top notice strip ===== */
+    .seats-strip{
+      background:linear-gradient(90deg, var(--accent) 0%, #ffb13c 100%);
+      color:#21130a; font-weight:700; text-align:center;
+      padding:10px 0; letter-spacing:.02em; font-size:.9rem;
+    }
+    .seats-strip a{color:#21130a; text-decoration:underline; font-weight:800;}
+
+    /* ===== Nav ===== */
+    .nav-bar{
+      background:#fff; border-bottom:1px solid var(--line);
+      position:sticky; top:0; z-index:1000;
+    }
+    .nav-bar .brand{font-family:'Sora',sans-serif; font-weight:800; font-size:1.15rem; color:var(--navy); display:flex; align-items:center; gap:10px;}
+    .nav-bar .brand-logo{width:38px; height:38px; border-radius:50%; object-fit:cover;}
+    .nav-bar .brand span{color:var(--teal);}
+    .nav-link-custom{color:var(--ink); font-weight:600; font-size:.92rem; text-decoration:none; padding:8px 4px;}
+    .nav-link-custom:hover{color:var(--teal);}
+    .btn-cta{
+      background:var(--navy2); color:#fff; border:none; border-radius:999px;
+      padding:10px 22px; font-weight:700; font-size:.9rem; text-decoration:none;
+      transition:.18s;
+    }
+    .btn-cta:hover{background:var(--teal); color:#fff;}
+
+    /* ===== Hero ===== */
+    .hero{
+      background: radial-gradient(1100px 560px at 85% -15%, #1c3a64 0%, var(--navy) 55%, #08141f 100%);
+      color:#fff; position:relative; overflow:hidden;
+    }
+    .hero::after{
+      content:""; position:absolute; inset:0;
+      background:
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 64px),
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 64px);
+      pointer-events:none;
+    }
+    .hero-logo{width:88px; height:88px; border-radius:50%; box-shadow:0 8px 24px -8px rgba(0,0,0,0.5);}
+    .hero-badge{
+      display:inline-flex; align-items:center; gap:8px;
+      background:rgba(30,167,160,0.16); border:1px solid rgba(30,167,160,0.35);
+      border-radius:999px; padding:6px 16px; font-size:.78rem; font-weight:700;
+      letter-spacing:.05em; text-transform:uppercase; color:#9be8e2;
+    }
+    .hero h1{font-size:clamp(2.1rem, 5.2vw, 3.6rem); font-weight:800; line-height:1.1; letter-spacing:-.01em;}
+    .hero .accent{color:#ffb13c;}
+    .hero p.lead-text{font-size:1.12rem; opacity:.85; max-width:620px;}
+    .hero-stats{display:flex; flex-wrap:wrap; gap:14px; margin-top:30px;}
+    .hero-stats .pill{
+      background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14);
+      border-radius:16px; padding:14px 20px; min-width:150px;
+    }
+    .hero-stats .pill .val{font-weight:800; font-size:1.3rem; font-family:'Sora',sans-serif;}
+    .hero-stats .pill .lbl{font-size:.74rem; opacity:.65; text-transform:uppercase; letter-spacing:.06em; margin-top:2px;}
+
+    /* ===== Sections ===== */
+    section{padding:64px 0;}
+    .section-eyebrow{
+      color:var(--teal); font-weight:800; font-size:.78rem; text-transform:uppercase;
+      letter-spacing:.12em; margin-bottom:8px;
+    }
+    .section-title{font-weight:800; font-size:clamp(1.6rem,3.4vw,2.3rem); margin-bottom:14px;}
+    .section-sub{color:var(--muted); font-size:1.02rem; max-width:680px;}
+
+    /* ===== Mission ===== */
+    .mission-card{
+      background:#fff; border-radius:28px; border:1px solid var(--line);
+      padding:40px clamp(24px,5vw,56px); box-shadow:0 24px 48px -28px rgba(16,36,62,0.18);
+    }
+    .mission-card p{font-size:1.08rem; color:var(--ink); line-height:1.75;}
+
+    /* ===== Subject tabs (signature element) ===== */
+    .track-toggle{
+      display:inline-flex; background:#fff; border:1px solid var(--line);
+      border-radius:999px; padding:5px; gap:4px; margin-bottom:28px;
+    }
+    .track-toggle button{
+      border:none; background:transparent; border-radius:999px;
+      padding:10px 22px; font-weight:700; font-size:.9rem; color:var(--muted);
+      transition:.18s; cursor:pointer;
+    }
+    .track-toggle button.active{background:var(--navy2); color:#fff;}
+    .track-toggle button:not(.active):hover{color:var(--navy2);}
+
+    .subject-grid{display:none; flex-wrap:wrap; gap:10px;}
+    .subject-grid.active{display:flex;}
+    .subject-pill{
+      background:#fff; border:1.5px solid var(--line); border-radius:14px;
+      padding:14px 18px; font-weight:700; font-size:.94rem; color:var(--navy);
+      display:flex; align-items:center; gap:10px; flex:1 1 220px;
+      transition:.15s;
+    }
+    .subject-pill:hover{border-color:var(--teal); transform:translateY(-2px); box-shadow:0 10px 22px -16px rgba(30,167,160,0.4);}
+    .subject-pill .ic{
+      width:34px; height:34px; border-radius:10px; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center; font-size:1.05rem;
+      background:var(--teal-light); color:var(--teal);
+    }
+    .subject-grid.it-track .subject-pill .ic{background:rgba(255,122,48,0.12); color:var(--accent);}
+    .track-note{
+      font-size:.92rem; color:var(--muted); margin-top:18px; padding:14px 18px;
+      background:var(--teal-light); border-radius:14px; border-left:4px solid var(--teal);
+    }
+
+    /* ===== Certifications ===== */
+    .cert-row{display:flex; flex-wrap:wrap; gap:12px;}
+    .cert-chip{
+      background:var(--navy); color:#fff; border-radius:14px; padding:16px 22px;
+      font-weight:800; font-family:'Sora',sans-serif; font-size:1.05rem;
+      display:flex; flex-direction:column; gap:4px; flex:1 1 160px;
+    }
+    .cert-chip small{font-weight:500; font-size:.74rem; opacity:.65; font-family:'Manrope',sans-serif; letter-spacing:.02em;}
+
+    /* ===== Two-col feature lists (amaliy ta'lim, xalqaro hamkorlik) ===== */
+    .feature-card{
+      background:#fff; border-radius:22px; border:1px solid var(--line);
+      padding:28px; height:100%;
+    }
+    .feature-card h4{font-weight:800; margin-bottom:6px;}
+    .feature-card .ic-lg{
+      width:48px; height:48px; border-radius:14px; display:flex; align-items:center;
+      justify-content:center; font-size:1.4rem; margin-bottom:14px;
+      background:var(--teal-light); color:var(--teal);
+    }
+    .feature-list{list-style:none; padding:0; margin:0;}
+    .feature-list li{
+      display:flex; align-items:flex-start; gap:10px; padding:8px 0;
+      font-size:.94rem; color:var(--ink); border-bottom:1px solid var(--line);
+    }
+    .feature-list li:last-child{border-bottom:none;}
+    .feature-list li .check{color:var(--teal); font-weight:800; flex-shrink:0;}
+
+    /* ===== Pricing ===== */
+    .pricing-card{
+      background:#fff; border-radius:24px; border:1px solid var(--line);
+      padding:32px 28px; height:100%; position:relative; transition:.18s;
+    }
+    .pricing-card.featured{
+      border-color:var(--navy2); box-shadow:0 24px 48px -24px rgba(30,60,114,0.35);
+      transform:translateY(-6px);
+    }
+    .pricing-card .tag{
+      position:absolute; top:-13px; right:24px; background:var(--accent); color:#21130a;
+      font-size:.72rem; font-weight:800; padding:5px 14px; border-radius:999px;
+      letter-spacing:.04em; text-transform:uppercase;
+    }
+    .pricing-card .price{font-family:'Sora',sans-serif; font-weight:800; font-size:1.9rem; margin:10px 0 4px;}
+    .pricing-card .price span{font-size:.92rem; font-weight:600; color:var(--muted);}
+    .pricing-card h5{font-weight:800; font-size:1.05rem; margin-bottom:0;}
+    .pricing-card ul{list-style:none; padding:0; margin:18px 0 0; font-size:.9rem; color:var(--ink);}
+    .pricing-card ul li{padding:6px 0; display:flex; gap:8px;}
+    .pricing-card ul li::before{content:"✓"; color:var(--teal); font-weight:800;}
+
+    /* ===== Meal plans ===== */
+    .meal-card{
+      background:#fff; border-radius:22px; border:1px solid var(--line); padding:28px; height:100%;
+    }
+    .meal-card h5{font-weight:800; margin-bottom:14px;}
+    .meal-card ul{list-style:none; padding:0; margin:0; font-size:.94rem;}
+    .meal-card ul li{padding:7px 0; border-bottom:1px solid var(--line);}
+    .meal-card ul li:last-child{border-bottom:none;}
+    .meal-total{
+      margin-top:14px; padding:10px 14px; background:var(--teal-light); border-radius:12px;
+      font-weight:800; font-size:.9rem; color:var(--teal); text-align:center;
+    }
+
+    /* ===== Why us ===== */
+    .why-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px;}
+    .why-item{
+      background:#fff; border:1px solid var(--line); border-radius:16px;
+      padding:18px 20px; font-weight:700; font-size:.94rem; display:flex; gap:12px; align-items:flex-start;
+    }
+    .why-item .check{
+      width:28px; height:28px; border-radius:50%; background:var(--teal-light); color:var(--teal);
+      display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:.9rem;
+    }
+
+    /* ===== Final CTA ===== */
+    .cta-band{
+      background: linear-gradient(120deg, var(--navy) 0%, var(--navy2) 100%);
+      color:#fff; border-radius:32px; padding:56px clamp(24px,6vw,72px);
+      text-align:center; position:relative; overflow:hidden;
+    }
+    .cta-band h2{font-weight:800; margin-bottom:10px;}
+    .cta-band p{opacity:.8; margin-bottom:26px; max-width:520px; margin-inline:auto;}
+    .btn-cta-lg{
+      background:var(--accent); color:#21130a; border:none; border-radius:999px;
+      padding:15px 36px; font-weight:800; font-size:1.02rem; text-decoration:none;
+      display:inline-block; transition:.18s;
+    }
+    .btn-cta-lg:hover{transform:translateY(-2px); box-shadow:0 14px 28px -12px rgba(255,122,48,0.5); color:#21130a;}
+
+    /* ===== Footer ===== */
+    footer.site-footer{background:var(--navy); color:rgba(255,255,255,.65);}
+    footer.site-footer a{color:#fff; text-decoration:none; font-weight:600;}
+    footer.site-footer .brand{font-family:'Sora',sans-serif; font-weight:800; color:#fff; font-size:1.05rem;}
+    footer.site-footer .footer-logo{width:48px; height:48px; border-radius:50%;}
+
+    @media (max-width:768px){
+      section{padding:46px 0;}
+      .subject-grid .subject-pill{flex:1 1 100%;}
+    }
+  </style>
+</head>
+<body>
+
+<div class="seats-strip">⚡ JOYLAR SONI CHEKLANGAN — 2026-yil qabuli boshlandi · <a href="index.html">Hoziroq yoziling →</a></div>
+
+<nav class="nav-bar py-3">
+  <div class="container d-flex justify-content-between align-items-center">
+    <span class="brand"><img src="logo.png" alt="Hackathon IT School" class="brand-logo">HACKATHON <span>IT</span> SCHOOL</span>
+    <div class="d-none d-md-flex gap-4 align-items-center">
+      <a href="#yonalishlar" class="nav-link-custom">Ta'lim yo'nalishlari</a>
+      <a href="#sertifikat" class="nav-link-custom">Sertifikatlar</a>
+      <a href="#tolov" class="nav-link-custom">Narxlar</a>
+      <a href="index.html" class="btn-cta">Qabulga yozilish</a>
+    </div>
+    <a href="index.html" class="btn-cta d-md-none">Yozilish</a>
+  </div>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<header class="hero py-5">
+  <div class="container py-5 position-relative">
+    <img src="logo.png" alt="Hackathon IT School" class="hero-logo mb-4">
+    <div class="hero-badge mb-3">Farg'ona shahri · Xususiy maktab</div>
+    <h1 class="mb-3">Kelajak kasblariga<br>yo'naltirilgan <span class="accent">zamonaviy ta'lim</span> markazi</h1>
+    <p class="lead-text mb-4">
+      Hackathon IT School — o'quvchilarni nafaqat maktab fanlari, balki zamonaviy IT kasblari va xalqaro standartlar asosida tayyorlaydigan ta'lim muassasasi. Har bir o'quvchi umumiy ta'lim bilan bir qatorda kamida bitta zamonaviy kasbni chuqur o'rganadi.
+    </p>
+    <a href="index.html" class="btn-cta-lg">Qabulga yozilish</a>
+    <div class="hero-stats">
+      <div class="pill"><div class="val">8+</div><div class="lbl">Asosiy fan</div></div>
+      <div class="pill"><div class="val">8</div><div class="lbl">IT yo'nalishi</div></div>
+      <div class="pill"><div class="val">IELTS / SAT / CCNA</div><div class="lbl">Xalqaro sertifikatlar</div></div>
+      <div class="pill"><div class="val">Xitoy · Kanada</div><div class="lbl">Xalqaro hamkorlik</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== MISSION ===================== -->
+<section class="container">
+  <div class="mission-card">
+    <div class="section-eyebrow">Bizning maqsadimiz</div>
+    <p class="mb-0">
+      Maktabimizning asosiy maqsadi — o'quvchilarga sifatli ta'lim berish, ularni xalqaro sertifikatlarga tayyorlash, zamonaviy kasblarni o'rgatish hamda kelajakdagi oliy ta'lim va karyera yo'lida mustahkam poydevor yaratishdir. Ta'lim jarayoni nazariya va amaliyot uyg'unligida olib boriladi — o'quvchilar real loyihalarda ishlaydi, portfolio yaratadi va zamonaviy ish bozoriga tayyorlanadi.
+    </p>
+  </div>
+</section>
+
+<!-- ===================== TA'LIM YO'NALISHLARI ===================== -->
+<section class="container" id="yonalishlar">
+  <div class="section-eyebrow">Ta'lim yo'nalishlari</div>
+  <h2 class="section-title">Ikki yo'nalishda mustahkam tayyorgarlik</h2>
+  <p class="section-sub mb-4">Har bir o'quvchi umumiy ta'lim fanlarini chuqur o'rganadi va shu bilan birga kamida bitta zamonaviy IT kasbini egallaydi.</p>
+
+  <div class="track-toggle" role="tablist">
+    <button class="active" data-track="general">📘 Asosiy fanlar</button>
+    <button data-track="it">💻 IT va kasbiy ta'lim</button>
+  </div>
+
+  <div class="subject-grid active" data-grid="general">
+    <div class="subject-pill"><span class="ic">∑</span> Matematika</div>
+    <div class="subject-pill"><span class="ic">⚛</span> Fizika</div>
+    <div class="subject-pill"><span class="ic">⚗</span> Kimyo</div>
+    <div class="subject-pill"><span class="ic">🧬</span> Biologiya</div>
+    <div class="subject-pill"><span class="ic">📖</span> Ona tili va adabiyot</div>
+    <div class="subject-pill"><span class="ic">🇬🇧</span> Ingliz tili</div>
+    <div class="subject-pill"><span class="ic">🇷🇺</span> Rus tili</div>
+    <div class="subject-pill"><span class="ic">🇨🇳</span> Xitoy tili</div>
+  </div>
+
+  <div class="subject-grid it-track" data-grid="it">
+    <div class="subject-pill"><span class="ic">🐍</span> Python dasturlash</div>
+    <div class="subject-pill"><span class="ic">🌐</span> Web dasturlash (Laravel)</div>
+    <div class="subject-pill"><span class="ic">📱</span> Mobil dasturlash</div>
+    <div class="subject-pill"><span class="ic">🎯</span> UI/UX dizayn</div>
+    <div class="subject-pill"><span class="ic">🔌</span> Cisco tarmoq texnologiyalari</div>
+    <div class="subject-pill"><span class="ic">🛡️</span> Kiberxavfsizlik</div>
+    <div class="subject-pill"><span class="ic">🎨</span> Grafik dizayn</div>
+    <div class="subject-pill"><span class="ic">💼</span> Freelancing va masofaviy ish</div>
+  </div>
+
+  <div class="track-note">
+    Har bir o'quvchi umumiy ta'lim bilan bir qatorda <strong>kamida bitta zamonaviy kasbni</strong> chuqur o'rganadi.
+  </div>
+</section>
+
+<!-- ===================== SERTIFIKATLAR ===================== -->
+<section class="container" id="sertifikat">
+  <div class="section-eyebrow">Xalqaro sertifikatlarga tayyorgarlik</div>
+  <h2 class="section-title">O'quvchilar quyidagi sertifikatlar uchun tayyorlanadi</h2>
+  <div class="cert-row mt-4">
+    <div class="cert-chip">IELTS <small>Ingliz tili</small></div>
+    <div class="cert-chip">SAT <small>Oliy ta'limga</small></div>
+    <div class="cert-chip">Cisco CCNA <small>Tarmoq texnologiyalari</small></div>
+    <div class="cert-chip">IT sertifikatlar <small>Dasturlash bo'yicha</small></div>
+    <div class="cert-chip">Til sertifikatlari <small>Xorijiy tillar</small></div>
+  </div>
+</section>
+
+<!-- ===================== AMALIY TA'LIM / XALQARO HAMKORLIK ===================== -->
+<section class="container">
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="feature-card">
+        <div class="ic-lg">🛠️</div>
+        <h4>Amaliy ta'lim</h4>
+        <p class="text-secondary mb-3" style="font-size:.94rem;">Ta'lim jarayoni nazariya va amaliyot uyg'unligida olib boriladi.</p>
+        <ul class="feature-list">
+          <li><span class="check">✓</span> Real loyihalarda ishlash</li>
+          <li><span class="check">✓</span> Portfolio yaratish</li>
+          <li><span class="check">✓</span> Freelancing platformalarida ishlashni o'rganish</li>
+          <li><span class="check">✓</span> Jamoaviy loyihalarda qatnashish</li>
+          <li><span class="check">✓</span> Zamonaviy ish bozoriga tayyorgarlik</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="feature-card">
+        <div class="ic-lg">🌍</div>
+        <h4>Xalqaro hamkorlik</h4>
+        <p class="text-secondary mb-3" style="font-size:.94rem;">Hackathon IT School Xitoy va Kanada universitetlari hamda ta'lim markazlari bilan hamkorlik qiladi.</p>
+        <ul class="feature-list">
+          <li><span class="check">✓</span> Xorijiy universitetlarga tayyorgarlik</li>
+          <li><span class="check">✓</span> Grant va stipendiyalar olish imkoniyati</li>
+          <li><span class="check">✓</span> Xalqaro ta'lim dasturlarida qatnashish</li>
+          <li><span class="check">✓</span> Chet davlatlarda o'qish bo'yicha maslahat va yo'riqnomalar</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== O'QISH SHAKLLARI VA TO'LOV ===================== -->
+<section class="container" id="tolov">
+  <div class="section-eyebrow">O'qish shakllari va to'lov miqdorlari</div>
+  <h2 class="section-title">Har bir oilaga mos shakl</h2>
+  <div class="row g-4 mt-2">
+    <div class="col-md-4">
+      <div class="pricing-card">
+        <h5>O'quvchi o'zi qatnaydi</h5>
+        <div class="price">2 200 000 <span>so'm / oy</span></div>
+        <ul>
+          <li>Asosiy fanlar + IT yo'nalishi</li>
+          <li>Tushlik va poldnik</li>
+          <li>Xalqaro sertifikat tayyorgarligi</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="pricing-card featured">
+        <span class="tag">Eng qulay</span>
+        <h5>Maktab transportida qatnaydi</h5>
+        <div class="price">2 500 000 <span>so'm / oy</span></div>
+        <ul>
+          <li>Transport xizmati</li>
+          <li>Asosiy fanlar + IT yo'nalishi</li>
+          <li>Tushlik va poldnik</li>
+          <li>Xalqaro sertifikat tayyorgarligi</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="pricing-card">
+        <h5>Maktab yotoqxonasida yashaydi</h5>
+        <div class="price">3 300 000 <span>so'm / oy</span></div>
+        <ul>
+          <li>To'liq yashash sharoiti</li>
+          <li>4 mahal sifatli ovqatlanish</li>
+          <li>Asosiy fanlar + IT yo'nalishi</li>
+          <li>Xalqaro sertifikat tayyorgarligi</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== OVQATLANISH TIZIMI ===================== -->
+<section class="container">
+  <div class="section-eyebrow">Ovqatlanish tizimi</div>
+  <h2 class="section-title">Sifatli va to'yimli ovqatlanish</h2>
+  <div class="row g-4 mt-2">
+    <div class="col-md-6">
+      <div class="meal-card">
+        <h5>🏠 Uydan qatnaydigan o'quvchilar uchun</h5>
+        <ul>
+          <li>✅ Tushlik (1 mahal issiq ovqat)</li>
+          <li>✅ Poldnik (yengil taom)</li>
+        </ul>
+        <div class="meal-total">Jami: 2 mahal sifatli ovqatlanish</div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="meal-card">
+        <h5>🛏️ Yotoqxonada yashovchi o'quvchilar uchun</h5>
+        <ul>
+          <li>✅ Nonushta</li>
+          <li>✅ Tushlik (issiq ovqat)</li>
+          <li>✅ Poldnik (yengil taom)</li>
+          <li>✅ Kechki ovqat (issiq ovqat)</li>
+        </ul>
+        <div class="meal-total">Jami: 4 mahal sifatli ovqatlanish</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== NIMA UCHUN AYNAN BIZ ===================== -->
+<section class="container">
+  <div class="section-eyebrow">Nima uchun aynan Hackathon IT School?</div>
+  <h2 class="section-title mb-4">Bizni tanlash uchun 10 sabab</h2>
+  <div class="why-grid">
+    <div class="why-item"><span class="check">✓</span> Zamonaviy va qulay o'quv muhiti</div>
+    <div class="why-item"><span class="check">✓</span> Kuchli pedagoglar va IT mutaxassislari</div>
+    <div class="why-item"><span class="check">✓</span> Xalqaro sertifikatlarga tayyorgarlik</div>
+    <div class="why-item"><span class="check">✓</span> Zamonaviy kasb egallash imkoniyati</div>
+    <div class="why-item"><span class="check">✓</span> Ingliz, Rus va Xitoy tillarini o'rganish</div>
+    <div class="why-item"><span class="check">✓</span> Dasturlash va IT yo'nalishlari</div>
+    <div class="why-item"><span class="check">✓</span> Freelancing va onlayn daromad ko'nikmalari</div>
+    <div class="why-item"><span class="check">✓</span> Xorijiy universitetlarga tayyorlash</div>
+    <div class="why-item"><span class="check">✓</span> Grant va stipendiya imkoniyatlari</div>
+    <div class="why-item"><span class="check">✓</span> Nazariya va amaliyotni birlashtirgan ta'lim tizimi</div>
+  </div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section class="container">
+  <div class="cta-band">
+    <h2>Hackathon IT School — bugungi bilim, ertangi muvaffaqiyat!</h2>
+    <p>2026-yil qabuli uchun joylar cheklangan. Farzandingiz uchun o'rinni hoziroq band qiling.</p>
+    <a href="index.html" class="btn-cta-lg">Qabulga yozilish</a>
+  </div>
+</section>
+
+<footer class="site-footer py-4 mt-3">
+  <div class="container text-center small">
+    <img src="logo.png" alt="Hackathon IT School" class="footer-logo mb-2">
+    <p class="mb-1 brand">HACKATHON IT SCHOOL</p>
+    <p class="mb-0">© 2026 · Farg'ona shahri · Tel: <a href="tel:+998500456010">+998 50 045 60 10</a> · Joylar soni cheklangan</p>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.track-toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.track-toggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const track = btn.dataset.track;
+      document.querySelectorAll('.subject-grid').forEach(g => g.classList.remove('active'));
+      document.querySelector(`.subject-grid[data-grid="${track}"]`).classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
