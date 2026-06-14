@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Qabul | EduFuture</title>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; }
+    body { background: linear-gradient(145deg, #f8fafc 0%, #eef2f8 100%); min-height: 100vh; }
+    .card-modern {
+      background: rgba(255,255,255,0.97);
+      border-radius: 32px;
+      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.08);
+      border: 1px solid rgba(0,0,0,0.03);
+    }
+    .btn-submit {
+      background: #1e3c72;
+      border: none;
+      border-radius: 60px;
+      padding: 12px 20px;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+    .btn-submit:hover { background: #0f2b4f; transform: translateY(-2px); }
+    .form-control, textarea.form-control {
+      border-radius: 20px;
+      padding: 12px 18px;
+      border: 1px solid #dce3ec;
+    }
+    .form-control:focus, textarea.form-control:focus {
+      border-color: #1e3c72;
+      box-shadow: 0 0 0 3px rgba(30,60,114,0.2);
+    }
+    .table-custom th { background: #1e2a3a; color: white; font-weight: 600; }
+    .secret-trigger {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #ffffffdd;
+      backdrop-filter: blur(8px);
+      width: 50px;
+      height: 50px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+      z-index: 1050;
+      font-size: 22px;
+      color: #1e3c72;
+      transition: 0.2s;
+    }
+    .secret-trigger:hover { background: #1e3c72; color: white; transform: scale(1.05); }
+    @media (max-width:640px) { .secret-trigger { bottom: 16px; right: 16px; width: 44px; height: 44px; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar bg-transparent py-3"><div class="container"><span class="navbar-brand fw-bold fs-3">EduFuture</span></div></nav>
+
+<section class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8 col-12">
+      <div class="card-modern p-4 p-xl-5">
+        <div class="text-center mb-4"><h2 class="fw-bold">Ro‘yxatdan o‘tish</h2><p class="text-secondary">Quyidagi maʼlumotlarni to‘ldiring</p></div>
+        <form id="registrationForm">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">F.I.SH *</label>
+            <input type="text" class="form-control" id="fullName" placeholder="Ism Familiya" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Telefon raqam *</label>
+            <input type="tel" class="form-control" id="phone" placeholder="+998 90 123 45 67" required>
+          </div>
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Xabar (ixtiyoriy)</label>
+            <textarea class="form-control" id="message" rows="3" placeholder="Qo‘shimcha maʼlumot..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-submit text-white w-100 py-2 fw-bold" id="submitBtn">Yuborish</button>
+          <div id="formMessage" class="mt-3 text-center small"></div>
+        </form>
+        <hr class="my-4">
+        <div class="text-center text-muted small">🔒 Maʼlumotlaringiz xavfsiz saqlanadi</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="adminDashboardWrapper" style="display: none;">
+  <div class="container my-5">
+    <div class="card-modern p-4">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <h3 class="fw-bold mb-0">Admin panel</h3>
+        <div><button class="btn btn-outline-secondary btn-sm rounded-pill me-2" id="refreshAdminBtn">⟳ Yangilash</button><button class="btn btn-outline-danger btn-sm rounded-pill" id="logoutAdminBtn">Chiqish</button></div>
+      </div>
+      <div id="adminTableContainer"><div class="text-center py-5"><div class="spinner-border text-primary"></div><p>Yuklanmoqda...</p></div></div>
+    </div>
+  </div>
+</div>
+
+<footer class="text-center py-4 mt-3 border-top bg-light"><div class="container"><p class="mb-0 small">© 2025 EduFuture — Admin panel uchun pastki o‘ngdagi 🔒 belgisini bosing</p></div></footer>
+
+<div class="secret-trigger" id="secretAdminLock" title="Admin panel">🔒</div>
+
+<script>
+  // ========== SUPABASE SOZLAMALARI (O‘ZINGIZNIKIGA ALMASHTIRING) ==========
+  const SUPABASE_URL = "https://sizning-loyihangiz.supabase.co";     // <-- O‘Z URLINGIZ
+  const SUPABASE_ANON_KEY = "sizning-anon-kalitingiz";              // <-- O‘Z ANON KEY
+  
+  const ADMIN_PASSWORD = "admin2025";   // Parolni o‘zgartirishingiz mumkin
+
+  let supabaseClient = null;
+  let isSupabaseReady = false;
+  let adminVisible = false;
+
+  function showFormMessage(msg, type = "danger") {
+    const msgDiv = document.getElementById("formMessage");
+    if (!msgDiv) return;
+    msgDiv.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show mb-0 p-2">${msg} <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button></div>`;
+    setTimeout(() => { if(msgDiv) msgDiv.innerHTML = ""; }, 4000);
+  }
+
+  function initSupabase() {
+    if (SUPABASE_URL.includes("sizning-loyihangiz") || SUPABASE_ANON_KEY.includes("sizning-anon-kalitingiz")) {
+      console.warn("Supabase kalitlari o‘rnatilmagan!");
+      showFormMessage("⚠️ Supabase sozlanmagan. Iltimos, URL va Anon Keyni kodga yozing.", "warning");
+      isSupabaseReady = false;
+      return;
+    }
+    try {
+      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      isSupabaseReady = true;
+      console.log("Supabase ulandi");
+    } catch(e) {
+      console.error(e);
+      showFormMessage("Supabase ulanish xatosi", "danger");
+    }
+  }
+
+  async function saveRegistration(full_name, phone, message) {
+    if (!isSupabaseReady) throw new Error("Supabase ulanmagan");
+    const { data, error } = await supabaseClient
+      .from("registrations")
+      .insert([{ full_name, phone, message: message || null }])
+      .select();
+    if (error) throw error;
+    return data;
+  }
+
+  async function fetchAllRegistrations() {
+    if (!isSupabaseReady) throw new Error("Supabase ulanmagan");
+    const { data, error } = await supabaseClient
+      .from("registrations")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return data || [];
+  }
+
+  function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+  async function renderAdminDashboard() {
+    const container = document.getElementById("adminTableContainer");
+    if (!container) return;
+    try {
+      container.innerHTML = `<div class="text-center py-5"><div class="spinner-border text-primary"></div><p>Maʼlumot olinmoqda...</p></div>`;
+      const students = await fetchAllRegistrations();
+      if (!students.length) { container.innerHTML = `<div class="alert alert-info text-center">Hozircha hech qanday ariza yo‘q.</div>`; return; }
+      let html = `<div class="table-responsive"><table class="table table-custom table-hover mb-0"><thead><tr><th>#</th><th>F.I.SH</th><th>Telefon</th><th>Xabar</th><th>Yuborilgan vaqt</th></tr></thead><tbody>`;
+      students.forEach((stu, idx) => {
+        const date = stu.created_at ? new Date(stu.created_at).toLocaleString() : '—';
+        const msgText = stu.message?.trim() ? stu.message : "—";
+        html += `<tr><td>${idx+1}</td><td class="fw-semibold">${escapeHtml(stu.full_name)}</td><td>${escapeHtml(stu.phone)}</td><td><span class="badge bg-light text-dark rounded-pill px-3">${escapeHtml(msgText)}</span></td><td><small>${date}</small></td></tr>`;
+      });
+      html += `</tbody></table></div>`;
+      container.innerHTML = html;
+    } catch(err) {
+      container.innerHTML = `<div class="alert alert-danger">Xatolik: ${err.message}. Jadval yoki ustunlar nomini tekshiring.</div>`;
+    }
+  }
+
+  function showAdminDashboard() {
+    const wrapper = document.getElementById("adminDashboardWrapper");
+    if (wrapper) { wrapper.style.display = "block"; adminVisible = true; renderAdminDashboard(); wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  }
+  function hideAdminDashboard() { document.getElementById("adminDashboardWrapper").style.display = "none"; adminVisible = false; }
+
+  function triggerAdminLogin() {
+    const pwd = prompt("🔐 Admin parolini kiriting:");
+    if (pwd === ADMIN_PASSWORD) { if (!adminVisible) showAdminDashboard(); else renderAdminDashboard(); showFormMessage("Admin panel ochildi", "success"); }
+    else if(pwd !== null) alert("Noto‘g‘ri parol!");
+  }
+
+  // Ro‘yxatdan o‘tish
+  document.getElementById("registrationForm")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const fullName = document.getElementById("fullName").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const message = document.getElementById("message").value.trim();
+    if (!fullName) return showFormMessage("Ism va familiya majburiy", "danger");
+    if (!phone) return showFormMessage("Telefon raqam majburiy", "danger");
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true; btn.textContent = "Yuborilmoqda...";
+    try {
+      if (!isSupabaseReady) throw new Error("Supabase ulanishi yo‘q. Iltimos, URL va kalitlarni sozlang.");
+      await saveRegistration(fullName, phone, message);
+      showFormMessage("✅ Arizangiz qabul qilindi!", "success");
+      document.getElementById("registrationForm").reset();
+      if (adminVisible) renderAdminDashboard();
+    } catch (err) {
+      let x = "Xatolik: " + (err.message || "");
+      if (err.message?.includes("relation")) x += " — registrations jadvali yoki ustunlar mavjud emas.";
+      showFormMessage(x, "danger");
+    } finally { btn.disabled = false; btn.textContent = "Yuborish"; }
+  });
+
+  document.getElementById("secretAdminLock")?.addEventListener("click", triggerAdminLogin);
+  document.addEventListener("click", (e) => {
+    if (e.target.id === "refreshAdminBtn" || e.target.parentElement?.id === "refreshAdminBtn") { if(adminVisible) renderAdminDashboard(); }
+    if (e.target.id === "logoutAdminBtn" || e.target.parentElement?.id === "logoutAdminBtn") { hideAdminDashboard(); showFormMessage("Admin chiqdi", "info"); }
+  });
+
+  initSupabase();
+  if (!isSupabaseReady) {
+    const warn = document.createElement("div"); warn.className = "container mt-2";
+    warn.innerHTML = `<div class="alert alert-warning text-center">⚠️ Supabase kalitlari kiritilmagan. Kod ichidagi SUPABASE_URL va SUPABASE_ANON_KEY ni o‘z maʼlumotlaringiz bilan almashtiring.</div>`;
+    document.querySelector("section").after(warn);
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
