@@ -3,234 +3,318 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Qabul | EduFuture</title>
-  <!-- Bootstrap 5 -->
+  <title>Qabul 2026 | HACKATHON IT SCHOOL</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Supabase JS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    * { font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; }
-    body { background: linear-gradient(145deg, #f8fafc 0%, #eef2f8 100%); min-height: 100vh; }
-    .card-modern {
-      background: rgba(255,255,255,0.97);
-      border-radius: 32px;
-      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.08);
-      border: 1px solid rgba(0,0,0,0.03);
+    :root{
+      --navy:#10243e;
+      --navy2:#1e3c72;
+      --accent:#ff7a30;
+      --accent2:#ffb13c;
+      --bg:#f5f7fb;
+      --line:#e3e8f0;
     }
-    .btn-submit {
-      background: #1e3c72;
-      border: none;
-      border-radius: 60px;
-      padding: 12px 20px;
-      font-weight: 600;
-      transition: 0.2s;
+    *{font-family:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;}
+    h1,h2,h3,.display-font{font-family:'Sora',system-ui,sans-serif;}
+    body{background:var(--bg); color:var(--navy); min-height:100vh;}
+
+    .hero{
+      background: radial-gradient(1200px 600px at 80% -10%, #2a4a82 0%, var(--navy) 55%, #0b1929 100%);
+      color:#fff;
+      position:relative;
+      overflow:hidden;
     }
-    .btn-submit:hover { background: #0f2b4f; transform: translateY(-2px); }
-    .form-control, textarea.form-control {
-      border-radius: 20px;
-      padding: 12px 18px;
-      border: 1px solid #dce3ec;
+    .hero::after{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 64px),
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 64px);
+      pointer-events:none;
     }
-    .form-control:focus, textarea.form-control:focus {
-      border-color: #1e3c72;
-      box-shadow: 0 0 0 3px rgba(30,60,114,0.2);
+    .hero-badge{
+      display:inline-flex; align-items:center; gap:8px;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.18);
+      border-radius:999px;
+      padding:6px 16px;
+      font-size:.8rem; font-weight:600; letter-spacing:.04em;
+      backdrop-filter: blur(6px);
     }
-    .table-custom th { background: #1e2a3a; color: white; font-weight: 600; }
-    .secret-trigger {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: #ffffffdd;
-      backdrop-filter: blur(8px);
-      width: 50px;
-      height: 50px;
-      border-radius: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.12);
-      z-index: 1050;
-      font-size: 22px;
-      color: #1e3c72;
-      transition: 0.2s;
+    .hero-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(255,122,48,.2);}
+    .hero h1{font-size:clamp(2rem, 5vw, 3.4rem); font-weight:800; line-height:1.08; letter-spacing:-.01em;}
+    .hero .accent{color:var(--accent2);}
+    .hero-meta{
+      display:flex; flex-wrap:wrap; gap:14px; margin-top:28px;
     }
-    .secret-trigger:hover { background: #1e3c72; color: white; transform: scale(1.05); }
-    @media (max-width:640px) { .secret-trigger { bottom: 16px; right: 16px; width: 44px; height: 44px; } }
+    .hero-meta .pill{
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.14);
+      border-radius:16px;
+      padding:14px 18px;
+      min-width:160px;
+    }
+    .hero-meta .pill .label{font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; opacity:.65;}
+    .hero-meta .pill .val{font-weight:700; font-size:1.02rem; margin-top:2px;}
+
+    .seats-strip{
+      background:linear-gradient(90deg, var(--accent) 0%, var(--accent2) 100%);
+      color:#21130a;
+      font-weight:700;
+      text-align:center;
+      padding:10px 0;
+      letter-spacing:.02em;
+      font-size:.92rem;
+    }
+
+    .card-modern{
+      background:#ffffff;
+      border-radius:28px;
+      box-shadow:0 24px 48px -20px rgba(16,36,62,0.18);
+      border:1px solid var(--line);
+    }
+    .form-control, textarea.form-control, select.form-control{
+      border-radius:14px;
+      padding:13px 16px;
+      border:1.5px solid var(--line);
+      font-size:.96rem;
+    }
+    .form-control:focus, textarea.form-control:focus{
+      border-color:var(--navy2);
+      box-shadow:0 0 0 4px rgba(30,60,114,0.12);
+    }
+    .form-label{font-weight:600; font-size:.88rem; color:#33486b; margin-bottom:6px;}
+    .req{color:var(--accent);}
+
+    .btn-submit{
+      background:var(--navy2);
+      border:none; color:#fff;
+      border-radius:14px;
+      padding:15px 20px;
+      font-weight:700;
+      font-size:1.02rem;
+      transition:.18s ease;
+      letter-spacing:.01em;
+    }
+    .btn-submit:hover{background:#15305f; transform:translateY(-1px);}
+    .btn-submit:disabled{opacity:.65; transform:none;}
+
+    .info-card{
+      border-radius:20px;
+      padding:18px 20px;
+      background:#fff;
+      border:1px solid var(--line);
+      height:100%;
+    }
+    .info-card .ic{
+      width:42px; height:42px; border-radius:12px;
+      display:flex; align-items:center; justify-content:center;
+      background:rgba(30,60,114,0.08); color:var(--navy2);
+      font-size:1.25rem; margin-bottom:10px;
+    }
+    .info-card h6{font-weight:700; margin-bottom:4px;}
+    .info-card p{font-size:.86rem; color:#5b6c84; margin:0;}
+
+    .secret-trigger{
+      position:fixed; bottom:24px; right:24px;
+      background:rgba(16,36,62,0.92);
+      color:#fff;
+      width:48px; height:48px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; box-shadow:0 8px 20px rgba(16,36,62,0.35);
+      z-index:1050; font-size:20px; opacity:.35;
+      transition:.2s;
+    }
+    .secret-trigger:hover{opacity:1; transform:scale(1.06);}
+    @media (max-width:640px){ .secret-trigger{bottom:16px; right:16px; width:42px; height:42px;} }
+
+    footer.site-footer{
+      background:var(--navy); color:rgba(255,255,255,.72);
+    }
+    footer.site-footer a{color:#fff; text-decoration:none; font-weight:600;}
   </style>
 </head>
 <body>
 
-<nav class="navbar bg-transparent py-3"><div class="container"><span class="navbar-brand fw-bold fs-3">EduFuture</span></div></nav>
+<div class="seats-strip">⚡ JOYLAR SONI CHEKLANGAN — 2026-yil qabuli boshlandi</div>
 
-<section class="container py-4">
-  <div class="row justify-content-center">
-    <div class="col-lg-6 col-md-8 col-12">
-      <div class="card-modern p-4 p-xl-5">
-        <div class="text-center mb-4"><h2 class="fw-bold">Ro‘yxatdan o‘tish</h2><p class="text-secondary">Quyidagi maʼlumotlarni to‘ldiring</p></div>
+<header class="hero py-5">
+  <div class="container py-4 position-relative">
+    <div class="hero-badge mb-3"><span class="dot"></span> HACKATHON IT SCHOOL — Xususiy maktab</div>
+    <h1 class="mb-3">2026-yil qabul uchun <span class="accent">ariza topshiring</span></h1>
+    <p class="fs-5 mb-0" style="max-width:560px; opacity:.85;">
+      Zamonaviy IT yo‘nalishidagi xususiy maktabimizga farzandingizni yozish uchun quyidagi formani to‘ldiring — operatorlarimiz tez orada siz bilan bog‘lanadi.
+    </p>
+    <div class="hero-meta">
+      <div class="pill"><div class="label">Qabul yili</div><div class="val">2026</div></div>
+      <div class="pill"><div class="label">Bog‘lanish</div><div class="val">+998 50 045 60 10</div></div>
+      <div class="pill"><div class="label">Yo‘nalish</div><div class="val">IT &amp; Texnologiya</div></div>
+    </div>
+  </div>
+</header>
+
+<section class="container py-5">
+  <div class="row g-4 justify-content-center">
+    <div class="col-lg-7 col-12">
+      <div class="card-modern p-4 p-md-5">
+        <h3 class="fw-bold mb-1">Ro‘yxatdan o‘tish</h3>
+        <p class="text-secondary mb-4">Quyidagi maʼlumotlarni to‘liq va aniq kiriting</p>
         <form id="registrationForm">
-          <div class="mb-3">
-            <label class="form-label fw-semibold">F.I.SH *</label>
-            <input type="text" class="form-control" id="fullName" placeholder="Ism Familiya" required>
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label">O‘quvchining F.I.SH <span class="req">*</span></label>
+              <input type="text" class="form-control" id="fullName" placeholder="Ism Familiya Sharifi" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Ota-ona telefon raqami <span class="req">*</span></label>
+              <input type="tel" class="form-control" id="phone" placeholder="+998 90 123 45 67" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Tug‘ilgan sana</label>
+              <input type="date" class="form-control" id="birthDate">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Hozirgi yashash manzili (tuman/shahar)</label>
+              <input type="text" class="form-control" id="address" placeholder="Masalan: Toshkent sh., Yunusobod">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Qaysi sinfga yozilmoqchisiz</label>
+              <select class="form-control" id="grade">
+                <option value="">Tanlang...</option>
+                <option>1-sinf</option><option>2-sinf</option><option>3-sinf</option>
+                <option>4-sinf</option><option>5-sinf</option><option>6-sinf</option>
+                <option>7-sinf</option><option>8-sinf</option><option>9-sinf</option>
+                <option>10-sinf</option><option>11-sinf</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Qo‘shimcha xabar (ixtiyoriy)</label>
+              <textarea class="form-control" id="message" rows="3" placeholder="Savollaringiz yoki qo‘shimcha izoh..."></textarea>
+            </div>
           </div>
-          <div class="mb-3">
-            <label class="form-label fw-semibold">Telefon raqam *</label>
-            <input type="tel" class="form-control" id="phone" placeholder="+998 90 123 45 67" required>
-          </div>
-          <div class="mb-4">
-            <label class="form-label fw-semibold">Xabar (ixtiyoriy)</label>
-            <textarea class="form-control" id="message" rows="3" placeholder="Qo‘shimcha maʼlumot..."></textarea>
-          </div>
-          <button type="submit" class="btn btn-submit text-white w-100 py-2 fw-bold" id="submitBtn">Yuborish</button>
-          <div id="formMessage" class="mt-3 text-center small"></div>
+          <button type="submit" class="btn btn-submit w-100 mt-4" id="submitBtn">Arizani yuborish</button>
+          <div id="formMessage" class="mt-3"></div>
         </form>
-        <hr class="my-4">
-        <div class="text-center text-muted small">🔒 Maʼlumotlaringiz xavfsiz saqlanadi</div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 col-12">
+      <div class="d-flex flex-column gap-3 h-100">
+        <div class="info-card">
+          <div class="ic">📞</div>
+          <h6>Bog‘lanish uchun</h6>
+          <p>Savollaringiz bo‘lsa: <strong>+998 50 045 60 10</strong></p>
+        </div>
+        <div class="info-card">
+          <div class="ic">🏫</div>
+          <h6>Joylar cheklangan</h6>
+          <p>Har bir sinf uchun o‘rinlar soni cheklangan, shu sababli iloji boricha tezroq ariza topshiring.</p>
+        </div>
+        <div class="info-card">
+          <div class="ic">⏱️</div>
+          <h6>Keyingi qadam</h6>
+          <p>Ariza qabul qilingach, operatorlarimiz 1–2 kun ichida siz bilan telefon orqali bog‘lanadi.</p>
+        </div>
+        <div class="info-card">
+          <div class="ic">🔒</div>
+          <h6>Maxfiylik</h6>
+          <p>Kiritilgan maʼlumotlar faqat qabul jarayoni uchun ishlatiladi va xavfsiz saqlanadi.</p>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<div id="adminDashboardWrapper" style="display: none;">
-  <div class="container my-5">
-    <div class="card-modern p-4">
-      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
-        <h3 class="fw-bold mb-0">Admin panel</h3>
-        <div><button class="btn btn-outline-secondary btn-sm rounded-pill me-2" id="refreshAdminBtn">⟳ Yangilash</button><button class="btn btn-outline-danger btn-sm rounded-pill" id="logoutAdminBtn">Chiqish</button></div>
-      </div>
-      <div id="adminTableContainer"><div class="text-center py-5"><div class="spinner-border text-primary"></div><p>Yuklanmoqda...</p></div></div>
-    </div>
+<footer class="site-footer py-4 mt-3">
+  <div class="container text-center small">
+    <p class="mb-1 fw-bold">HACKATHON IT SCHOOL</p>
+    <p class="mb-0">© 2026 · Tel: <a href="tel:+998500456010">+998 50 045 60 10</a> · Joylar soni cheklangan</p>
   </div>
-</div>
-
-<footer class="text-center py-4 mt-3 border-top bg-light"><div class="container"><p class="mb-0 small">© 2025 EduFuture — Admin panel uchun pastki o‘ngdagi 🔒 belgisini bosing</p></div></footer>
+</footer>
 
 <div class="secret-trigger" id="secretAdminLock" title="Admin panel">🔒</div>
 
 <script>
-  // ========== SUPABASE SOZLAMALARI (O‘ZINGIZNIKIGA ALMASHTIRING) ==========
-  const SUPABASE_URL = "https://wxnrolrrfcdzhkjyunyx.supabase.co";     // <-- O‘Z URLINGIZ
-  const SUPABASE_ANON_KEY = "sb_publishable_nUOvzTJN26fLNIzRilM7cQ_IuAXxijd";              // <-- O‘Z ANON KEY
-  
-  const ADMIN_PASSWORD = "rishton01";   // Parolni o‘zgartirishingiz mumkin
+  const SUPABASE_URL = "https://wxnrolrrfcdzhkjyunyx.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_nUOvzTJN26fLNIzRilM7cQ_IuAXxijd";
+  const ADMIN_PASSWORD = "rishton01";
 
   let supabaseClient = null;
   let isSupabaseReady = false;
-  let adminVisible = false;
 
   function showFormMessage(msg, type = "danger") {
     const msgDiv = document.getElementById("formMessage");
     if (!msgDiv) return;
     msgDiv.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show mb-0 p-2">${msg} <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button></div>`;
-    setTimeout(() => { if(msgDiv) msgDiv.innerHTML = ""; }, 4000);
+    setTimeout(() => { if(msgDiv) msgDiv.innerHTML = ""; }, 5000);
   }
 
   function initSupabase() {
-    if (SUPABASE_URL.includes("sizning-loyihangiz") || SUPABASE_ANON_KEY.includes("sizning-anon-kalitingiz")) {
-      console.warn("Supabase kalitlari o‘rnatilmagan!");
-      showFormMessage("⚠️ Supabase sozlanmagan. Iltimos, URL va Anon Keyni kodga yozing.", "warning");
-      isSupabaseReady = false;
-      return;
-    }
     try {
       supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       isSupabaseReady = true;
-      console.log("Supabase ulandi");
     } catch(e) {
       console.error(e);
       showFormMessage("Supabase ulanish xatosi", "danger");
     }
   }
 
-  async function saveRegistration(full_name, phone, message) {
+  async function saveRegistration(payload) {
     if (!isSupabaseReady) throw new Error("Supabase ulanmagan");
     const { data, error } = await supabaseClient
       .from("registrations")
-      .insert([{ full_name, phone, message: message || null }])
+      .insert([payload])
       .select();
     if (error) throw error;
     return data;
   }
 
-  async function fetchAllRegistrations() {
-    if (!isSupabaseReady) throw new Error("Supabase ulanmagan");
-    const { data, error } = await supabaseClient
-      .from("registrations")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (error) throw error;
-    return data || [];
-  }
-
-  function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
-
-  async function renderAdminDashboard() {
-    const container = document.getElementById("adminTableContainer");
-    if (!container) return;
-    try {
-      container.innerHTML = `<div class="text-center py-5"><div class="spinner-border text-primary"></div><p>Maʼlumot olinmoqda...</p></div>`;
-      const students = await fetchAllRegistrations();
-      if (!students.length) { container.innerHTML = `<div class="alert alert-info text-center">Hozircha hech qanday ariza yo‘q.</div>`; return; }
-      let html = `<div class="table-responsive"><table class="table table-custom table-hover mb-0"><thead><tr><th>#</th><th>F.I.SH</th><th>Telefon</th><th>Xabar</th><th>Yuborilgan vaqt</th></tr></thead><tbody>`;
-      students.forEach((stu, idx) => {
-        const date = stu.created_at ? new Date(stu.created_at).toLocaleString() : '—';
-        const msgText = stu.message?.trim() ? stu.message : "—";
-        html += `<tr><td>${idx+1}</td><td class="fw-semibold">${escapeHtml(stu.full_name)}</td><td>${escapeHtml(stu.phone)}</td><td><span class="badge bg-light text-dark rounded-pill px-3">${escapeHtml(msgText)}</span></td><td><small>${date}</small></td></tr>`;
-      });
-      html += `</tbody></table></div>`;
-      container.innerHTML = html;
-    } catch(err) {
-      container.innerHTML = `<div class="alert alert-danger">Xatolik: ${err.message}. Jadval yoki ustunlar nomini tekshiring.</div>`;
-    }
-  }
-
-  function showAdminDashboard() {
-    const wrapper = document.getElementById("adminDashboardWrapper");
-    if (wrapper) { wrapper.style.display = "block"; adminVisible = true; renderAdminDashboard(); wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-  }
-  function hideAdminDashboard() { document.getElementById("adminDashboardWrapper").style.display = "none"; adminVisible = false; }
-
-  function triggerAdminLogin() {
-    const pwd = prompt("🔐 Admin parolini kiriting:");
-    if (pwd === ADMIN_PASSWORD) { if (!adminVisible) showAdminDashboard(); else renderAdminDashboard(); showFormMessage("Admin panel ochildi", "success"); }
-    else if(pwd !== null) alert("Noto‘g‘ri parol!");
-  }
-
-  // Ro‘yxatdan o‘tish
   document.getElementById("registrationForm")?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const fullName = document.getElementById("fullName").value.trim();
     const phone = document.getElementById("phone").value.trim();
-    const message = document.getElementById("message").value.trim();
+    const birthDate = document.getElementById("birthDate").value || null;
+    const address = document.getElementById("address").value.trim() || null;
+    const grade = document.getElementById("grade").value || null;
+    const message = document.getElementById("message").value.trim() || null;
+
     if (!fullName) return showFormMessage("Ism va familiya majburiy", "danger");
     if (!phone) return showFormMessage("Telefon raqam majburiy", "danger");
+
     const btn = document.getElementById("submitBtn");
     btn.disabled = true; btn.textContent = "Yuborilmoqda...";
     try {
-      if (!isSupabaseReady) throw new Error("Supabase ulanishi yo‘q. Iltimos, URL va kalitlarni sozlang.");
-      await saveRegistration(fullName, phone, message);
-      showFormMessage("✅ Arizangiz qabul qilindi!", "success");
+      if (!isSupabaseReady) throw new Error("Supabase ulanishi yo‘q.");
+      await saveRegistration({
+        full_name: fullName,
+        phone: phone,
+        birth_date: birthDate,
+        address: address,
+        grade_applied: grade,
+        message: message,
+        status: "new"
+      });
+      showFormMessage("✅ Arizangiz qabul qilindi! Tez orada operatorlarimiz siz bilan bog‘lanadi.", "success");
       document.getElementById("registrationForm").reset();
-      if (adminVisible) renderAdminDashboard();
     } catch (err) {
       let x = "Xatolik: " + (err.message || "");
-      if (err.message?.includes("relation")) x += " — registrations jadvali yoki ustunlar mavjud emas.";
       showFormMessage(x, "danger");
-    } finally { btn.disabled = false; btn.textContent = "Yuborish"; }
+    } finally { btn.disabled = false; btn.textContent = "Arizani yuborish"; }
   });
 
-  document.getElementById("secretAdminLock")?.addEventListener("click", triggerAdminLogin);
-  document.addEventListener("click", (e) => {
-    if (e.target.id === "refreshAdminBtn" || e.target.parentElement?.id === "refreshAdminBtn") { if(adminVisible) renderAdminDashboard(); }
-    if (e.target.id === "logoutAdminBtn" || e.target.parentElement?.id === "logoutAdminBtn") { hideAdminDashboard(); showFormMessage("Admin chiqdi", "info"); }
+  document.getElementById("secretAdminLock")?.addEventListener("click", () => {
+    const pwd = prompt("🔐 Admin parolini kiriting:");
+    if (pwd === ADMIN_PASSWORD) {
+      window.location.href = "admin.html";
+    } else if (pwd !== null) {
+      alert("Noto‘g‘ri parol!");
+    }
   });
 
   initSupabase();
-  if (!isSupabaseReady) {
-    const warn = document.createElement("div"); warn.className = "container mt-2";
-    warn.innerHTML = `<div class="alert alert-warning text-center">⚠️ Supabase kalitlari kiritilmagan. Kod ichidagi SUPABASE_URL va SUPABASE_ANON_KEY ni o‘z maʼlumotlaringiz bilan almashtiring.</div>`;
-    document.querySelector("section").after(warn);
-  }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
