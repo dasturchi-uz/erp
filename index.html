@@ -45,6 +45,18 @@
       backdrop-filter: blur(6px);
     }
     .hero-logo{width:80px; height:80px; border-radius:50%; box-shadow:0 8px 24px -8px rgba(0,0,0,0.5);}
+    .btn-about{
+      display:inline-flex; align-items:center; gap:8px;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.18);
+      border-radius:999px;
+      padding:10px 20px;
+      font-size:.85rem; font-weight:700; letter-spacing:.01em;
+      color:#fff; text-decoration:none;
+      backdrop-filter: blur(6px);
+      transition:.18s;
+    }
+    .btn-about:hover{background:rgba(255,255,255,0.16); border-color:rgba(255,255,255,0.35); color:#fff;}
     .hero-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(255,122,48,.2);}
     .hero h1{font-size:clamp(2rem, 5vw, 3.4rem); font-weight:800; line-height:1.08; letter-spacing:-.01em;}
     .hero .accent{color:var(--accent2);}
@@ -155,7 +167,10 @@
 
 <header class="hero py-5">
   <div class="container py-4 position-relative">
-    <img src="logo.png" alt="Hackathon IT School" class="hero-logo mb-3">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+      <img src="logo.png" alt="Hackathon IT School" class="hero-logo">
+      <a href="about.html#tolov" class="btn-about">📋 Oylik to‘lovlar haqida ma'lumot</a>
+    </div>
     <div class="hero-badge mb-3"><span class="dot"></span> HACKATHON IT SCHOOL — Xususiy maktab</div>
     <h1 class="mb-3">2026-yil qabul uchun <span class="accent">ariza topshiring</span></h1>
     <p class="fs-5 mb-0" style="max-width:560px; opacity:.85;">
@@ -201,8 +216,6 @@
         </div>
       </div>
     </div>
-
-   
     </div>
   </div>
 </section>
@@ -212,6 +225,7 @@
     <img src="logo.png" alt="Hackathon IT School" class="footer-logo mb-2">
     <p class="mb-1 fw-bold">HACKATHON IT SCHOOL</p>
     <p class="mb-0">© 2026 · Tel: <a href="tel:+998500456010">+998 50 045 60 10</a> · Joylar soni cheklangan</p>
+    <p class="mb-0 mt-2"><a href="about.html">Maktab haqida va oylik to‘lovlar →</a></p>
   </div>
 </footer>
 
