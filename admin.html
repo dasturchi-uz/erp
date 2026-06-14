@@ -35,6 +35,7 @@
       width:100%; max-width:380px;
     }
     .login-card h2{font-weight:800; margin-bottom:4px;}
+    .login-logo{width:72px; height:72px; border-radius:50%;}
     .login-card .form-control{border-radius:14px; padding:13px 16px; border:1.5px solid var(--line);}
     .login-card .form-control:focus{border-color:var(--navy2); box-shadow:0 0 0 4px rgba(30,60,114,0.12);}
     .btn-login{
@@ -49,6 +50,7 @@
     }
     .topbar .brand{font-family:'Sora',sans-serif; font-weight:800; font-size:1.15rem;}
     .topbar .sub{opacity:.65; font-size:.8rem;}
+    .topbar-logo{width:42px; height:42px; border-radius:50%;}
 
     .stat-card{
       background:#fff; border-radius:18px; padding:16px 18px;
@@ -122,8 +124,9 @@
 <!-- ===================== LOGIN SCREEN ===================== -->
 <div id="loginScreen" class="login-wrap">
   <div class="login-card">
-    <h2>Admin panel</h2>
-    <p class="text-secondary mb-4">HACKATHON IT SCHOOL — Qabul 2026</p>
+    <div class="text-center mb-3"><img src="logo.png" alt="Hackathon IT School" class="login-logo"></div>
+    <h2 class="text-center">Admin panel</h2>
+    <p class="text-secondary mb-4 text-center">HACKATHON IT SCHOOL — Qabul 2026</p>
     <div class="mb-3">
       <label class="form-label fw-semibold">Parol</label>
       <input type="password" id="adminPasswordInput" class="form-control" placeholder="Parolni kiriting" autofocus>
@@ -140,9 +143,12 @@
 <div id="adminApp" style="display:none;">
   <div class="topbar">
     <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
-      <div>
-        <div class="brand">HACKATHON IT SCHOOL</div>
-        <div class="sub">Admin panel · Qabul 2026</div>
+      <div class="d-flex align-items-center gap-3">
+        <img src="logo.png" alt="Hackathon IT School" class="topbar-logo">
+        <div>
+          <div class="brand">HACKATHON IT SCHOOL</div>
+          <div class="sub">Admin panel · Qabul 2026</div>
+        </div>
       </div>
       <div class="d-flex gap-2">
         <button class="btn btn-outline-light btn-sm rounded-pill" id="refreshBtn">⟳ Yangilash</button>
