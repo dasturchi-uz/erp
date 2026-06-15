@@ -586,6 +586,27 @@
 </footer>
 
 <script>
+  document.querySelectorAll('.map-toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.map-toggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const map = btn.dataset.map;
+      document.querySelectorAll('.map-pane').forEach(p => p.classList.remove('active'));
+      document.querySelector(`.map-pane[data-pane="${map}"]`).classList.add('active');
+    });
+  });
+
+  document.getElementById('copyCoords')?.addEventListener('click', () => {
+    const text = "40.355617, 71.767729";
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copyCoords');
+      const original = btn.textContent;
+      btn.textContent = "Nusxalandi ✓";
+      setTimeout(() => { btn.textContent = original; }, 1800);
+    });
+  });
+</script>
+<script>
   document.querySelectorAll('.track-toggle button').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.track-toggle button').forEach(b => b.classList.remove('active'));
